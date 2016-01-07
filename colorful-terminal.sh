@@ -1,25 +1,31 @@
 #!/bin/sh
 ########################
 
-osascript -l JavaScript << EOF
+red=`expr $RANDOM % 50 \* 1000`
+green=`expr $RANDOM % 40 \* 1000`
+blue=`expr $RANDOM % 40 \* 1000`
 
-  var red = Math.random()*0.3+0.3;
-  var green = Math.random()*0.3;
-  var blue = Math.random()*0.2;
-
-  var terminal = Application('Terminal');
-  var win = terminal.windows[0];
-  var tab = win.tabs[0];
-  tab.backgroundColor = [red, green, blue];
-
-  red *= 100000;
-  green *= 100000;
-  blue *= 100000;
-
-  var iterm = Application('iTerm');
-  var term = iterm.currentTerminal();
-  var sess = term.currentSession();
-  sess.backgroundColor = [red, green, blue];
-  
+osascript << EOF
+tell application "Terminal"
+  if frontmost then    
+    tell window 1
+      tell tab 1
+        set background color to {$red, $green, $blue}
+        set normal text color to "white"
+      end tell
+    end tell
+  end if
+end tell
 EOF
 
+/usr/bin/osascript << EOF
+tell application "iTerm"
+  if frontmost then    
+    tell the current terminal
+      tell the current session
+          set background color to {$red, $green, $blue}
+      end tell
+    end tell
+  end if
+end tell
+EOF
